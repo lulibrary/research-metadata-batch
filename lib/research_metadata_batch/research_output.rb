@@ -4,7 +4,7 @@ module ResearchMetadataBatch
 
   class ResearchOutput < ResearchMetadataBatch::Base
     # (see ResearchMetadataBatch::Base#initialize)
-    def initialize(pure_config:, aws_config:, log_file: nil)
+    def initialize(pure_config:, log_file: nil)
       super
       @resource_type = :research_output
     end
