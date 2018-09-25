@@ -20,14 +20,20 @@ Or install it yourself as:
     $ gem install research_metadata_batch
 
 ## Basic usage
-Use the default classes, output metadata to STDOUT, without any further processing. With action 
-set to false, the ```mock_action``` method is called, which merely inspects the metadata models.
+Uses the default gem behaviour which merely inspects the metadata models using STDOUT.
 
 ```ruby 
-ResearchMetadataBatch::Dataset.new(pure_config: pure_config).process action: false
+pure_config = {
+  url:      ENV['PURE_URL'],
+  username: ENV['PURE_USERNAME'],
+  password: ENV['PURE_PASSWORD'],
+  api_key:  ENV['PURE_API_KEY']
+}
+ResearchMetadataBatch::Dataset.new(pure_config: pure_config).process
 ```
 
-## Custom application
+## Making an application
+Custom behaviour can be achieved by subclassing ```ResearchMetadataBatch::Base``` and using its derivatives as the basis for resource classes. This example uses Amazon Web Services.
 
 ### Base class 
 Implement methods to be inherited by all subclasses.
@@ -39,12 +45,13 @@ require 'research_metadata_batch'
 
 module MyApp
   class Base < ResearchMetadataBatch::Base
-    def initialize(pure_config:, my_app_config:, log_file: nil)
-      # ...do something with my_app_config
+    def initialize(pure_config:, aws_config:, log_file: nil)
+      super pure_config: pure_config, log_file: log_file
+      # Do something with additional arguments provided, i.e. aws_config
     end  
-    
+        
     def init
-      # Anything to be done at the start of a batch run 
+      # Anything to be done at the start of a batch run       
     end
 
     def init_success_logger_message
@@ -71,7 +78,7 @@ end
 ```
 
 ### Resource class
-Mandatory structure. Optionally, implement the same methods as those in base, specific to a resource.
+Optionally, implement the same methods as those in base, specific to a resource.
 ```ruby
 # dataset.rb
 
@@ -94,27 +101,27 @@ end
 
 require_relative 'path/to/your/application/classes'
 
-def pure_config
-  {
-      url:      ENV['PURE_URL'],
-      username: ENV['PURE_USERNAME'],
-      password: ENV['PURE_PASSWORD'],
-      api_key:  ENV['PURE_API_KEY']
-  }
-end
+pure_config = {
+  url:      ENV['PURE_URL'],
+  username: ENV['PURE_USERNAME'],
+  password: ENV['PURE_PASSWORD'],
+  api_key:  ENV['PURE_API_KEY']
+}
 
-def other_config
-  {
-    foo: 'bar'
-  }
-end
+aws_config = {
+  access_key_id: ENV['AWS_ACCESS_KEY_ID'],
+  secret_access_key: ENV['AWS_SECRET_ACCESS_KEY'],
+  region: ENV['AWS_REGION'],
+  s3_bucket: 'YOUR_S3_BUCKET'
+}
 
-def config
-  {
-    pure_config: pure_config,
-    other_config: other_config
-  }
-end
+log_file = 'path/to/your/log/file'
+
+config = {
+  pure_config: pure_config,
+  aws_config: aws_config,
+  log_file: log_file
+}
 
 MyApp::Dataset.new(config).process
 ```

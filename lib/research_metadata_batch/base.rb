@@ -118,6 +118,7 @@ module ResearchMetadataBatch
 
     def act(model)
       # Define in subclasses
+      puts model.inspect
     end
 
     def act_success_logger_message(model, act_msg)
@@ -126,7 +127,6 @@ module ResearchMetadataBatch
 
     def mock_act(model)
       # Define in subclasses
-      puts model.inspect
     end
 
     def record_valid?(model)
