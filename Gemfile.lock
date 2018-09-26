@@ -23,10 +23,12 @@ GEM
     mini_portile2 (2.3.0)
     nokogiri (1.8.4)
       mini_portile2 (~> 2.3.0)
+    oj (3.6.10)
     public_suffix (3.0.3)
-    puree (2.2.0)
+    puree (2.3.0)
       http (~> 2.0)
       nokogiri (~> 1.6)
+      oj (~> 3.6)
     rake (10.5.0)
     unf (0.1.4)
       unf_ext

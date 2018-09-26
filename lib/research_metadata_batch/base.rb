@@ -1,9 +1,11 @@
 require 'logger'
 require 'puree'
+require_relative 'custom'
 
 module ResearchMetadataBatch
-  # @note Not to be used directly.
+  # @note Not to be used directly
   class Base
+    include ResearchMetadataBatch::Custom
    # @param pure_config [Hash]
     # @option config [String] :url
     # @option config [String] :username
@@ -104,36 +106,15 @@ module ResearchMetadataBatch
 
     private
 
-    def init
-      # Define in subclasses
-    end
-
-    def init_success_logger_message
-      # Define in subclasses
-    end
-
-    def init_error_logger_message(error)
-      # Define in subclasses
-    end
-
     def act(model)
-      # Define in subclasses
       puts model.inspect
     end
 
-    def act_success_logger_message(model, act_msg)
-      # Define in subclasses
-    end
-
-    def mock_act(model)
-      # Define in subclasses
-    end
-
     def record_valid?(model)
-      # Define in subclasses
       true
     end
 
+    # @return [String]
     def logger_message_prefix(pure_record, pure_uuid)
       "PURE_RECORD=#{pure_record} - PURE_UUID=#{pure_uuid}"
     end

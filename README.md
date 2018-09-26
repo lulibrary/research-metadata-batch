@@ -33,11 +33,13 @@ ResearchMetadataBatch::Dataset.new(pure_config: pure_config).process
 ```
 
 ## Making an application
-Custom behaviour can be achieved by subclassing ```ResearchMetadataBatch::Base``` and using its derivatives as the basis for resource classes. This example uses Amazon Web Services.
+Subclass {ResearchMetadataBatch::Base} and use its derivatives as the basis for resource classes. 
+
+Implement methods from {ResearchMetadataBatch::Custom}, for example, in ```MyApp::Custom``` (```custom.rb```).  
+
+This example uses Amazon Web Services.
 
 ### Base class 
-Implement methods to be inherited by all subclasses.
-
 ```ruby
 # base.rb
 
@@ -45,40 +47,17 @@ require 'research_metadata_batch'
 
 module MyApp
   class Base < ResearchMetadataBatch::Base
+    include MyApp::Custom 
     def initialize(pure_config:, aws_config:, log_file: nil)
       super pure_config: pure_config, log_file: log_file
       # Do something with additional arguments provided, i.e. aws_config
-    end  
-        
-    def init
-      # Anything to be done at the start of a batch run       
-    end
-
-    def init_success_logger_message
-      # Message when init method completes
-    end
-
-    def init_error_logger_message(error)
-      # Message when init method does not complete
-    end
-
-    def act(model)
-      # Anything to be done with model metadata
-    end
-
-    def act_success_logger_message(model, act_msg)
-      # Message when act method completes
-    end
-
-    def mock_act(model)
-      # Anything to be done with model metadata instead instead of completing act method.
-    end    
+    end                
   end
 end
 ```
 
 ### Resource class
-Optionally, implement the same methods as those in base, specific to a resource.
+Optionally, implement the same methods as those in ```custom.rb```, specific to a resource.
 ```ruby
 # dataset.rb
 
