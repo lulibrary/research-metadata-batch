@@ -1,6 +1,6 @@
 # Research Metadata Batch
 For the batch processing of Pure records. Custom actions and log messages can be 
-defined in user applications.
+defined in user-defined applications.
 
 
 ## Installation
@@ -33,45 +33,38 @@ ResearchMetadataBatch::Dataset.new(pure_config: pure_config).process
 ```
 
 ## Making an application
-Subclass {ResearchMetadataBatch::Base} as in ```MyApp::Base``` below and use its derivatives e.g. {ResearchMetadataBatch::Dataset} 
-as the basis for resource classes as in ```MyApp::Dataset``` below. 
-
-Implement methods from {ResearchMetadataBatch::Custom} as shared methods in ```MyApp::Base```.  
+Load this gem, then open up the base class {ResearchMetadataBatch::Base} as below. Provide any secondary initialisation 
+using the ```setup``` method. Implement methods from {ResearchMetadataBatch::Custom} as shared methods.
+ 
+ 
+For resource-specific customisation, open up the class e.g. {ResearchMetadataBatch::Dataset}. Implement methods from 
+{ResearchMetadataBatch::Custom} as resource-specific methods.
 
 This example uses Amazon Web Services.
 
 ### Base class 
 ```ruby
-# base.rb
-
-require 'research_metadata_batch'
-
-module MyApp
-  class Base < ResearchMetadataBatch::Base
-    def initialize(pure_config:, aws_config:, log_file: nil)
-      super pure_config: pure_config, log_file: log_file
-      # Do something with additional arguments provided, i.e. aws_config
-      # Implement methods from ResearchMetadataBatch::Custom as shared methods 
-    end        
+module ResearchMetadataBatch
+  class Base
+    def setup(aws_config:)
+      aws_credentials = Aws::Credentials.new aws_config[:access_key_id],
+                                             aws_config[:secret_access_key]
+      @s3_client = Aws::S3::Client.new region: aws_config[:region],
+                                       credentials: aws_credentials
+      @s3_bucket = aws_config[:s3_bucket]
+    end
+  
+    def act(model)
+      # Do something involving Amazon Web Services 
+    end
   end
 end
 ```
 
 ### Resource class
-Optionally, implement the same methods as those in ```MyApp::Custom```, specific to a resource.
 ```ruby
-# dataset.rb
-
-require_relative 'base'
-
-module MyApp   
-  class Dataset < MyApp::Base
-    # (see MyApp::Base#initialize)
-    def initialize(pure_config:, aws_config:, log_file: nil)
-      super
-      @resource_type = :dataset
-    end
-    
+module ResearchMetadataBatch   
+  class Dataset    
     # Implement methods from ResearchMetadataBatch::Custom
   end  
 end
@@ -79,9 +72,7 @@ end
 
 ### Running a batch process
 ```ruby
-# script.rb
-
-require_relative 'path/to/your/application/classes'
+require_relative '/path/to/your/opened/class'
 
 pure_config = {
   url:      ENV['PURE_URL'],
@@ -97,17 +88,14 @@ aws_config = {
   s3_bucket: 'YOUR_S3_BUCKET'
 }
 
-log_file = 'path/to/your/log/file'
+log_file = '/path/to/your/log/file'
 
 config = {
   pure_config: pure_config,
-  aws_config: aws_config,
   log_file: log_file
 }
 
-MyApp::Dataset.new(config).process
+batch = ResearchMetadataBatch::Dataset.new config
+batch.setup aws_config: aws_config
+batch.process
 ```
-
-## License
-
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
