@@ -33,9 +33,10 @@ ResearchMetadataBatch::Dataset.new(pure_config: pure_config).process
 ```
 
 ## Making an application
-Subclass {ResearchMetadataBatch::Base} and use its derivatives as the basis for resource classes. 
+Subclass {ResearchMetadataBatch::Base} as in ```MyApp::Base``` below and use its derivatives e.g. {ResearchMetadataBatch::Dataset} 
+as the basis for resource classes as in ```MyApp::Dataset``` below. 
 
-Implement methods from {ResearchMetadataBatch::Custom}, for example, in ```MyApp::Custom``` (```custom.rb```).  
+Implement methods from {ResearchMetadataBatch::Custom} as shared methods in ```MyApp::Base```.  
 
 This example uses Amazon Web Services.
 
@@ -47,17 +48,17 @@ require 'research_metadata_batch'
 
 module MyApp
   class Base < ResearchMetadataBatch::Base
-    include MyApp::Custom 
     def initialize(pure_config:, aws_config:, log_file: nil)
       super pure_config: pure_config, log_file: log_file
       # Do something with additional arguments provided, i.e. aws_config
-    end                
+      # Implement methods from ResearchMetadataBatch::Custom as shared methods 
+    end        
   end
 end
 ```
 
 ### Resource class
-Optionally, implement the same methods as those in ```custom.rb```, specific to a resource.
+Optionally, implement the same methods as those in ```MyApp::Custom```, specific to a resource.
 ```ruby
 # dataset.rb
 
@@ -70,6 +71,8 @@ module MyApp
       super
       @resource_type = :dataset
     end
+    
+    # Implement methods from ResearchMetadataBatch::Custom
   end  
 end
 ```
