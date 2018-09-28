@@ -37,10 +37,10 @@ module ResearchMetadataBatch
       @logger.info "#{records_available} records in Pure before processing"
       if action
         begin
-          init
-          @logger.info init_success_logger_message
+          preflight
+          @logger.info preflight_success_log_message
         rescue => error
-          @logger.info init_error_logger_message(error)
+          @logger.info preflight_error_log_message(error)
         end
       end
 
@@ -72,7 +72,7 @@ module ResearchMetadataBatch
         result.each do |i|
 
           if !record_valid? i
-            @logger.warn "#{logger_message_prefix(position, i.uuid)} - record invalid"
+            @logger.warn "#{log_message_prefix(position, i.uuid)} - record invalid"
             position += 1
             next
           end
@@ -83,9 +83,9 @@ module ResearchMetadataBatch
             else
               act_msg = mock_act i
             end
-            @logger.info "#{logger_message_prefix(position, i.uuid)} - #{act_success_logger_message(i, act_msg)}" if act_msg
+            @logger.info "#{log_message_prefix(position, i.uuid)} - #{act_success_log_message(i, act_msg)}" if act_msg
           rescue => error
-            @logger.error "#{logger_message_prefix(position, i.uuid)} - ERROR=#{error}"
+            @logger.error "#{log_message_prefix(position, i.uuid)} - ERROR=#{error}"
           end
 
           position += 1
@@ -98,7 +98,7 @@ module ResearchMetadataBatch
 
         # handle error response
         if result.empty?
-          @logger.error "#{logger_message_prefix(position, nil)} - ERROR=system"
+          @logger.error "#{log_message_prefix(position, nil)} - ERROR=system"
           position += 1
         end
 
@@ -120,7 +120,7 @@ module ResearchMetadataBatch
     end
 
     # @return [String]
-    def logger_message_prefix(pure_record, pure_uuid)
+    def log_message_prefix(pure_record, pure_uuid)
       "PURE_RECORD=#{pure_record} - PURE_UUID=#{pure_uuid}"
     end
 

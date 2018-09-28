@@ -4,17 +4,17 @@ module ResearchMetadataBatch
   module Custom
 
     # Anything to be done at the start of a batch run
-    def init
+    def preflight
     end
 
-    # Message when init method completes
+    # Message when preflight method completes
     # @return [String]
-    def init_success_logger_message
+    def preflight_success_log_message
     end
 
-    # Message when init method does not complete
+    # Message when preflight method does not complete
     # @return [String]
-    def init_error_logger_message(error)
+    def preflight_error_log_message(error)
     end
 
     # Do something with model metadata
@@ -24,7 +24,7 @@ module ResearchMetadataBatch
 
     # Message when act/mock_act completes
     # @return [String]
-    def act_success_logger_message(model, act_msg)
+    def act_success_log_message(model, act_msg)
     end
 
     # Fake doing something with model metadata
