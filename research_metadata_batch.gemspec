@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Adrian Albin-Clark"]
   spec.email         = ["a.albin-clark@lancaster.ac.uk"]
 
-  spec.summary       = %q{research_metadata_batch}
+  spec.summary       = %q{Batch processing for the Pure Research Information System.}
   spec.homepage      = 'https://github.com/lulibrary/research_metadata_batch'
   spec.license       = "MIT"
 
@@ -25,8 +25,6 @@ Gem::Specification.new do |spec|
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
   end
-  spec.bindir        = "exe"
-  spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
   spec.add_dependency 'puree', '~> 2.2'
