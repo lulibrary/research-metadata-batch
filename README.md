@@ -5,6 +5,7 @@ defined in user-defined applications.
 ## Status
 
 [![Gem Version](https://badge.fury.io/rb/research_metadata_batch.svg)](https://badge.fury.io/rb/research_metadata_batch)
+[![Maintainability](https://api.codeclimate.com/v1/badges/d3d1723f2900c3e4774a/maintainability)](https://codeclimate.com/github/lulibrary/research-metadata-batch/maintainability)
 
 ## Installation
 
