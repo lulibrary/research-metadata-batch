@@ -3,6 +3,11 @@ module ResearchMetadataBatch
   # @note These methods are used internally by {ResearchMetadataBatch::Base#process} and have been left public for documentation purposes only
   module Custom
 
+    # Second stage initialisation, perhaps third party services.
+    # @param args [Hash]
+    def init(**args)
+    end
+
     # Anything to be done at the start of a batch run
     def preflight
     end

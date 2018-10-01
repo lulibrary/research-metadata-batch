@@ -33,11 +33,12 @@ ResearchMetadataBatch::Dataset.new(pure_config: pure_config).process
 ```
 
 ## Making an application
-Load this gem, then open up the base class {ResearchMetadataBatch::Base} as below. Provide any secondary initialisation 
-using the ```setup``` method. Implement methods from {ResearchMetadataBatch::Custom} as shared methods.
+Load this gem, then open up the base class {ResearchMetadataBatch::Base} as below. Implement methods from 
+{ResearchMetadataBatch::Custom} as shared methods, including any secondary initialisation using the 
+``init`` method.
  
  
-For resource-specific customisation, open up the class e.g. {ResearchMetadataBatch::Dataset}. Implement methods from 
+For resource-specific customisation, open up a resource class e.g. {ResearchMetadataBatch::Dataset}. Implement methods from 
 {ResearchMetadataBatch::Custom} as resource-specific methods.
 
 This example uses Amazon Web Services.
@@ -46,7 +47,7 @@ This example uses Amazon Web Services.
 ```ruby
 module ResearchMetadataBatch
   class Base
-    def setup(aws_config:)
+    def init(aws_config:)
       aws_credentials = Aws::Credentials.new aws_config[:access_key_id],
                                              aws_config[:secret_access_key]
       @s3_client = Aws::S3::Client.new region: aws_config[:region],
@@ -96,6 +97,6 @@ config = {
 }
 
 batch = ResearchMetadataBatch::Dataset.new config
-batch.setup aws_config: aws_config
+batch.init aws_config: aws_config
 batch.process
 ```

@@ -21,11 +21,6 @@ module ResearchMetadataBatch
       end
     end
 
-    # Second stage initialisation, perhaps third party services.
-    # @param args [Hash]
-    def setup(**args)
-    end
-
     # @param max [Fixnum] Number of records to act upon. Omit to act upon as many as possible.
     # @param limit [Fixnum] Pure records limit.
     # @param offset [Fixnum] Pure records offset.
