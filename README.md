@@ -2,6 +2,9 @@
 For the batch processing of Pure records. Custom actions and log messages can be 
 defined in user-defined applications.
 
+## Status
+
+[![Gem Version](https://badge.fury.io/rb/research_metadata_batch.svg)](https://badge.fury.io/rb/research_metadata_batch)
 
 ## Installation
 
@@ -34,7 +37,7 @@ ResearchMetadataBatch::Dataset.new(pure_config: pure_config).process
 
 ## Making an application
 Load this gem, then open up the base class {ResearchMetadataBatch::Base} as below. Implement methods from 
-{ResearchMetadataBatch::Custom} as shared methods, including any secondary initialisation using the 
+{ResearchMetadataBatch::Custom} as inherited methods, including any secondary initialisation using the 
 ``init`` method.
  
  
