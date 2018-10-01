@@ -36,7 +36,7 @@ ResearchMetadataBatch::Dataset.new(pure_config: pure_config).process
 ```
 
 ## Making an application
-Load this gem, then open up the base class {ResearchMetadataBatch::Base} as below. Implement methods from 
+Require this gem, then open up the base class {ResearchMetadataBatch::Base} as below. Implement methods from 
 {ResearchMetadataBatch::Custom} as inherited methods, including any secondary initialisation using the 
 ``init`` method.
  

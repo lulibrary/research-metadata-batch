@@ -1,6 +1,6 @@
 module ResearchMetadataBatch
 
-  # @note These methods are used internally by {ResearchMetadataBatch::Base#process} and have been left public for documentation purposes only
+  # @note These methods (except init) are used internally by {ResearchMetadataBatch::Base#process} and have been left public for documentation purposes only
   module Custom
 
     # Second stage initialisation, perhaps third party services.
