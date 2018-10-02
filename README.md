@@ -77,7 +77,8 @@ end
 
 ### Running a batch process
 ```ruby
-require_relative '/path/to/your/opened/class'
+require 'research_metadata_batch'
+# require your opened classes
 
 pure_config = {
   url:      ENV['PURE_URL'],
