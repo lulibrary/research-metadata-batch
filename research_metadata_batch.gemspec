@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Adrian Albin-Clark"]
   spec.email         = ["a.albin-clark@lancaster.ac.uk"]
   spec.summary       = %q{Batch processing for the Pure Research Information System.}
-  spec.homepage      = 'https://github.com/lulibrary/research_metadata_batch'
+  spec.homepage      = 'https://github.com/lulibrary/research-metadata-batch'
   spec.license       = "MIT"
   spec.files         = `git ls-files -z`.split("\x0")
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
