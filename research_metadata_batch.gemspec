@@ -16,6 +16,6 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = '~> 2.1'
   spec.add_dependency 'puree', '~> 2.2'
   spec.metadata = {
-    "source_code_uri" => "https://github.com/lulibrary/research-metadata-batch"
+    "source_code_uri" => "https://github.com/lulibrary/research_metadata_batch"
   }
 end
