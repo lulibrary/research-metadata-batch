@@ -79,7 +79,11 @@ module ResearchMetadataBatch
             else
               act_msg = mock_act i
             end
-            @logger.info "#{log_message_prefix(position, i.uuid)} - #{act_success_log_message(i, act_msg)}" if act_msg
+            if act_msg
+              @logger.info "#{log_message_prefix(position, i.uuid)} - #{act_success_log_message(i, act_msg)}"
+            else
+              @logger.info "#{log_message_prefix(position, i.uuid)}
+            end
           rescue => error
             @logger.error "#{log_message_prefix(position, i.uuid)} - ERROR=#{error}"
           end
