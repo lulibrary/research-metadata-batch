@@ -38,8 +38,8 @@ module ResearchMetadataBatch
     end
 
     # Check for values in metadata
-    # @return [Boolean]
-    def record_valid?(model)
+    # @return [String, nil]
+    def validate_record(model)
     end
 
   end

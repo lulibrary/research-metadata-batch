@@ -66,8 +66,9 @@ module ResearchMetadataBatch
 
         result.each do |i|
 
-          if !record_valid? i
-            @logger.warn "#{log_message_prefix(position, i.uuid)} - record invalid"
+          record_validation_error = validate_record i
+          if record_validation_error
+            @logger.warn "#{log_message_prefix(position, i.uuid)} - VALIDATION_ERROR=#{record_validation_error}"
             position += 1
             next
           end
@@ -108,10 +109,6 @@ module ResearchMetadataBatch
 
     def act(model)
       puts model.inspect
-    end
-
-    def record_valid?(model)
-      true
     end
 
     # @return [String]
