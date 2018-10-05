@@ -26,7 +26,7 @@ module ResearchMetadataBatch
     # @param offset [Fixnum] Pure records offset.
     # @param action [Boolean] Set to false to mock an action.
     # @param delay [Fixnum] Delay in seconds between limit-sized batches.
-    def process(max: nil, limit: 50, offset: 0, action: true, delay: 0)
+    def process(max: nil, limit: 20, offset: 0, action: true, delay: 0)
       records_available = resource_count
 
       @logger.info "#{records_available} records in Pure before processing"
