@@ -94,7 +94,7 @@ module ResearchMetadataBatch
 
         # handle error response
         if result.empty?
-          @logger.error "#{log_message_prefix(position, nil)} - ERROR=No data"
+          @logger.error "PURE_RECORD=#{position} - ERROR=No data"
           position += 1
         end
 
