@@ -82,7 +82,7 @@ module ResearchMetadataBatch
             if act_msg
               @logger.info "#{log_message_prefix(position, i.uuid)} - #{act_success_log_message(i, act_msg)}"
             else
-              @logger.info "#{log_message_prefix(position, i.uuid)}
+              @logger.info "#{log_message_prefix(position, i.uuid)}"
             end
           rescue => error
             @logger.error "#{log_message_prefix(position, i.uuid)} - ERROR=#{error}"
