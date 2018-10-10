@@ -69,7 +69,7 @@ end
 ### Resource class
 ```ruby
 module ResearchMetadataBatch   
-  class Dataset    
+  class ResearchOutput    
     # Implement methods from ResearchMetadataBatch::Custom
   end  
 end
@@ -101,7 +101,15 @@ config = {
   log_file: log_file
 }
 
-batch = ResearchMetadataBatch::Dataset.new config
+batch = ResearchMetadataBatch::ResearchOutput.new config
 batch.init aws_config: aws_config
-batch.process
+params = {
+  size: 20,
+  typeUri: [
+    '/dk/atira/pure/researchoutput/researchoutputtypes/contributiontojournal/article',
+    '/dk/atira/pure/researchoutput/researchoutputtypes/contributiontoconference/paper'
+  ]
+}
+batch.process params: params
+
 ```
