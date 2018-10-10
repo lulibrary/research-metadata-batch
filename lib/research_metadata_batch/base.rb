@@ -26,12 +26,8 @@ module ResearchMetadataBatch
     # @param action [Boolean] Set to false to mock an action.
     # @param delay [Fixnum] Delay in seconds between limit-sized batches.
     def process(params: {}, max: nil, action: true, delay: 0)
-      puts 'process'
-      puts params
-
       offset = params[:offset]
       records_available = resource_count params
-
       @logger.info "#{records_available} records in Pure before processing"
       if action
         begin
@@ -60,8 +56,6 @@ module ResearchMetadataBatch
       while position < records_available
         # extract from Pure
         begin
-          puts 'begin'
-          puts params
           params[:offset] = position
           result = resource_batch params
         rescue => e
@@ -127,23 +121,16 @@ module ResearchMetadataBatch
     end
 
     def resource_count(params)
-      puts 'resource_count'
-      puts params
-
+      params = params.dup
       resource_class = "Puree::Extractor::#{Puree::Util::String.titleize(@resource_type)}"
       Object.const_get(resource_class).new(@pure_config).count(params)
     end
 
     def resource_batch(params)
-      puts 'resource_batch'
-      puts params
-
+      params = params.dup
       resource_method = "#{@resource_type}s".to_sym
       client = Puree::REST::Client.new(@pure_config).send resource_method
       response = client.all_complex params: params
-
-      puts response.to_s
-
       Puree::XMLExtractor::Collection.send resource_method, response.to_s
     end
   end
