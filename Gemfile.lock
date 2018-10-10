@@ -1,8 +1,8 @@
 PATH
   remote: .
   specs:
-    research_metadata_batch (0.2.0)
-      puree (~> 2.2)
+    research_metadata_batch (0.3.0)
+      puree (~> 2.3)
 
 GEM
   remote: https://rubygems.org/
@@ -24,7 +24,7 @@ GEM
     nokogiri (1.8.4)
       mini_portile2 (~> 2.3.0)
     public_suffix (3.0.3)
-    puree (2.2.0)
+    puree (2.3.0)
       http (~> 2.0)
       nokogiri (~> 1.6)
     unf (0.1.4)

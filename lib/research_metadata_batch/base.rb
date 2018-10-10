@@ -6,7 +6,7 @@ module ResearchMetadataBatch
   # @note Not to be used directly
   class Base
     include ResearchMetadataBatch::Custom
-   # @param pure_config [Hash]
+    # @param pure_config [Hash]
     # @option config [String] :url
     # @option config [String] :username
     # @option config [String] :password
@@ -21,13 +21,16 @@ module ResearchMetadataBatch
       end
     end
 
+    # @param params [Hash] Combined GET and POST parameters for all records
     # @param max [Fixnum] Number of records to act upon. Omit to act upon as many as possible.
-    # @param limit [Fixnum] Pure records limit.
-    # @param offset [Fixnum] Pure records offset.
     # @param action [Boolean] Set to false to mock an action.
     # @param delay [Fixnum] Delay in seconds between limit-sized batches.
-    def process(max: nil, limit: 20, offset: 0, action: true, delay: 0)
-      records_available = resource_count
+    def process(params: {}, max: nil, action: true, delay: 0)
+      puts 'process'
+      puts params
+
+      offset = params[:offset]
+      records_available = resource_count params
 
       @logger.info "#{records_available} records in Pure before processing"
       if action
@@ -47,7 +50,7 @@ module ResearchMetadataBatch
         qty_to_find = records_available
       end
 
-      if offset < 0 || offset > records_available - 1
+      if !offset || offset < 0 || offset > records_available - 1
         offset = 0
       end
 
@@ -57,7 +60,10 @@ module ResearchMetadataBatch
       while position < records_available
         # extract from Pure
         begin
-          result = resource_batch limit, position
+          puts 'begin'
+          puts params
+          params[:offset] = position
+          result = resource_batch params
         rescue => e
           @logger.error e
           sleep 10
@@ -120,15 +126,24 @@ module ResearchMetadataBatch
       "PURE_RECORD=#{pure_record} - PURE_UUID=#{pure_uuid}"
     end
 
-    def resource_count
+    def resource_count(params)
+      puts 'resource_count'
+      puts params
+
       resource_class = "Puree::Extractor::#{Puree::Util::String.titleize(@resource_type)}"
-      Object.const_get(resource_class).new(@pure_config).count
+      Object.const_get(resource_class).new(@pure_config).count(params)
     end
 
-    def resource_batch(limit, offset)
+    def resource_batch(params)
+      puts 'resource_batch'
+      puts params
+
       resource_method = "#{@resource_type}s".to_sym
       client = Puree::REST::Client.new(@pure_config).send resource_method
-      response = client.all params: {size: limit, offset: offset}
+      response = client.all_complex params: params
+
+      puts response.to_s
+
       Puree::XMLExtractor::Collection.send resource_method, response.to_s
     end
   end
