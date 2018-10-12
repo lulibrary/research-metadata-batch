@@ -1,6 +1,5 @@
 # Research Metadata Batch
-For the batch processing of Pure records. Custom actions and log messages can be 
-defined in user-defined applications.
+Batch processing for the Pure Research Information System.
 
 ## Status
 
