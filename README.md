@@ -99,7 +99,7 @@ config = {
 batch = App::ResearchOutput.new config
 batch.init aws_config: aws_config
 params = {
-  size: 20,
+  size: 50,
   typeUri: [
     '/dk/atira/pure/researchoutput/researchoutputtypes/contributiontojournal/article',
     '/dk/atira/pure/researchoutput/researchoutputtypes/contributiontoconference/paper'

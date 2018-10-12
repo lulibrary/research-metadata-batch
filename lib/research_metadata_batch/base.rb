@@ -24,17 +24,15 @@ module ResearchMetadataBatch
     # @param params [Hash] Combined GET and POST parameters for all records
     # @param max [Fixnum] Number of records to act upon. Omit to act upon as many as possible.
     # @param delay [Fixnum] Delay in seconds between limit-sized batches.
-    def process(params: {}, max: nil, action: true, delay: 0)
+    def process(params: {}, max: nil, delay: 0)
       offset = params[:offset]
       records_available = resource_count params
       @logger.info "PURE_RECORDS_AVAILABLE=#{records_available}"
-      if action
-        begin
-          preflight_msg = preflight
-          @logger.info "PREFLIGHT=#{preflight_msg}" if preflight_msg
-        rescue => error
-          @logger.error "PREFLIGHT=#{preflight_msg}"
-        end
+      begin
+        preflight_msg = preflight
+        @logger.info "PREFLIGHT=#{preflight_msg}" if preflight_msg
+      rescue => error
+        @logger.error "PREFLIGHT=#{error}"
       end
 
       if max
