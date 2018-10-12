@@ -1,11 +1,11 @@
 require 'logger'
 require 'puree'
-require_relative 'custom'
+require_relative 'shared'
 
 module ResearchMetadataBatch
   # @note Not to be used directly
   class Base
-    include ResearchMetadataBatch::Custom
+    include ResearchMetadataBatch::Shared
     # @param pure_config [Hash]
     # @option config [String] :url
     # @option config [String] :username
@@ -23,18 +23,17 @@ module ResearchMetadataBatch
 
     # @param params [Hash] Combined GET and POST parameters for all records
     # @param max [Fixnum] Number of records to act upon. Omit to act upon as many as possible.
-    # @param action [Boolean] Set to false to mock an action.
     # @param delay [Fixnum] Delay in seconds between limit-sized batches.
     def process(params: {}, max: nil, action: true, delay: 0)
       offset = params[:offset]
       records_available = resource_count params
-      @logger.info "#{records_available} records in Pure before processing"
+      @logger.info "PURE_RECORDS_AVAILABLE=#{records_available}"
       if action
         begin
-          preflight
-          @logger.info preflight_success_log_message
+          preflight_msg = preflight
+          @logger.info "PREFLIGHT=#{preflight_msg}" if preflight_msg
         rescue => error
-          @logger.info preflight_error_log_message(error)
+          @logger.error "PREFLIGHT=#{preflight_msg}"
         end
       end
 
@@ -58,34 +57,25 @@ module ResearchMetadataBatch
         begin
           params[:offset] = position
           result = resource_batch params
-        rescue => e
-          @logger.error e
+        rescue => error
+          @logger.error "METADATA_EXTRACTION=#{error}"
           sleep 10
           redo
         end
 
         result.each do |i|
 
-          record_validation_error = validate_record i
-          if record_validation_error
-            @logger.warn "#{log_message_prefix(position, i.uuid)} - VALIDATION_ERROR=#{record_validation_error}"
+          unless valid? i
+            @logger.info "#{log_message_prefix(position, i.uuid)} : VALID=false"
             position += 1
             next
           end
 
           begin
-            if action
-              act_msg = act i
-            else
-              act_msg = mock_act i
-            end
-            if act_msg
-              @logger.info "#{log_message_prefix(position, i.uuid)} - #{act_success_log_message(i, act_msg)}"
-            else
-              @logger.info "#{log_message_prefix(position, i.uuid)}"
-            end
+            act_msg = act i
+            @logger.info "#{log_message_prefix(position, i.uuid)} : #{act_msg}"
           rescue => error
-            @logger.error "#{log_message_prefix(position, i.uuid)} - ERROR=#{error}"
+            @logger.error "#{log_message_prefix(position, i.uuid)} : #{error}"
           end
 
           position += 1
@@ -98,26 +88,22 @@ module ResearchMetadataBatch
 
         # handle error response
         if result.empty?
-          @logger.error "PURE_RECORD=#{position} - ERROR=No data"
+          @logger.error "PURE_RECORD=#{position} : METADATA_EXTRACTION=No data"
           position += 1
         end
 
         sleep delay
       end
 
-      @logger.info "#{records_available} records in Pure after processing"
+      @logger.info "PURE_RECORDS_AVAILABLE=#{records_available}"
 
     end
 
     private
 
-    def act(model)
-      puts model.inspect
-    end
-
     # @return [String]
     def log_message_prefix(pure_record, pure_uuid)
-      "PURE_RECORD=#{pure_record} - PURE_UUID=#{pure_uuid}"
+      "PURE_RECORD=#{pure_record} : PURE_UUID=#{pure_uuid}"
     end
 
     def resource_count(params)

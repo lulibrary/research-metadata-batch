@@ -36,21 +36,14 @@ pure_config = {
 ResearchMetadataBatch::Dataset.new(pure_config: pure_config).process
 ```
 
-## Making an application
-Require this gem, then open up the base class {ResearchMetadataBatch::Base} as below. Implement methods from 
-{ResearchMetadataBatch::Custom} as inherited methods, including any secondary initialisation using the 
-``init`` method.
- 
- 
-For resource-specific customisation, open up a resource class e.g. {ResearchMetadataBatch::Dataset}. Implement methods from 
-{ResearchMetadataBatch::Custom} as resource-specific methods.
-
+## Example application
 This example uses Amazon Web Services.
 
-### Base class 
+### shared.rb
+Implement methods from {ResearchMetadataBatch::Shared}.
 ```ruby
-module ResearchMetadataBatch
-  class Base
+module App
+  module Shared
     def init(aws_config:)
       aws_credentials = Aws::Credentials.new aws_config[:access_key_id],
                                              aws_config[:secret_access_key]
@@ -66,19 +59,21 @@ module ResearchMetadataBatch
 end
 ```
 
-### Resource class
+### research_output.rb
 ```ruby
-module ResearchMetadataBatch   
-  class ResearchOutput    
-    # Implement methods from ResearchMetadataBatch::Custom
+require_relative 'shared'
+
+module App
+  class ResearchOutput < ResearchMetadataBatch::ResearchOutput
+    include App::Shared
   end  
 end
 ```
 
-### Running a batch process
+### script.rb
 ```ruby
 require 'research_metadata_batch'
-# require your opened classes
+require_relative 'research_output'
 
 pure_config = {
   url:      ENV['PURE_URL'],
@@ -101,7 +96,7 @@ config = {
   log_file: log_file
 }
 
-batch = ResearchMetadataBatch::ResearchOutput.new config
+batch = App::ResearchOutput.new config
 batch.init aws_config: aws_config
 params = {
   size: 20,
