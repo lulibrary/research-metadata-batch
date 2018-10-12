@@ -11,7 +11,7 @@ module ResearchMetadataBatch
 
     private
 
-    def resource_batch(limit, offset)
+    def resource_batch(params)
       research_outputs_hash = super
       research_outputs_array = []
       research_outputs_hash.each do |k, v|
