@@ -42,6 +42,8 @@ This example uses Amazon Web Services.
 ### shared.rb
 Implement methods from {ResearchMetadataBatch::Shared}.
 ```ruby
+require 'aws-sdk-s3'
+
 module App
   module Shared
     def init(aws_config:)
