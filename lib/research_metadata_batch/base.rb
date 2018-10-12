@@ -23,7 +23,7 @@ module ResearchMetadataBatch
 
     # @param params [Hash] Combined GET and POST parameters for all records
     # @param max [Fixnum] Number of records to act upon. Omit to act upon as many as possible.
-    # @param delay [Fixnum] Delay in seconds between limit-sized batches.
+    # @param delay [Fixnum] Delay in seconds between batches.
     def process(params: {}, max: nil, delay: 0)
       offset = params[:offset]
       records_available = resource_count params
