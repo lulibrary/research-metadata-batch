@@ -1,4 +1,4 @@
-require 'logger'
+require 'ougai'
 require 'puree'
 require_relative 'shared'
 
@@ -15,9 +15,9 @@ module ResearchMetadataBatch
     def initialize(pure_config:, log_file: nil)
       @pure_config = pure_config
       if log_file
-        @logger = Logger.new File.new(log_file, 'a'), 20, 'daily'
+        @logger = Ougai::Logger.new File.new(log_file, 'a'), 20, 'daily'
       else
-        @logger = Logger.new(STDOUT)
+        @logger = Ougai::Logger.new(STDOUT)
       end
     end
 
@@ -27,12 +27,12 @@ module ResearchMetadataBatch
     def process(params: {}, max: nil, delay: 0)
       offset = params[:offset]
       records_available = resource_count params
-      @logger.info "PURE_RECORDS_AVAILABLE=#{records_available}"
+      log_records_available records_available
       begin
-        preflight_msg = preflight
-        @logger.info "PREFLIGHT=#{preflight_msg}" if preflight_msg
+        preflight_h = preflight
+        @logger.info({preflight: preflight_h}) if preflight_h.is_a?(Hash) && !preflight_h.empty?
       rescue => error
-        @logger.error "PREFLIGHT=#{error}"
+        @logger.error({preflight: error})
       end
 
       if max
@@ -56,7 +56,7 @@ module ResearchMetadataBatch
           params[:offset] = position
           result = resource_batch params
         rescue => error
-          @logger.error "METADATA_EXTRACTION=#{error}"
+          @logger.error({metadata_extraction: error})
           sleep 10
           redo
         end
@@ -64,16 +64,20 @@ module ResearchMetadataBatch
         result.each do |i|
 
           unless valid? i
-            @logger.info "#{log_message_prefix(position, i.uuid)} : VALID=false"
+            @logger.info log_entry_core(position, i.uuid).merge({valid: false})
             position += 1
             next
           end
 
           begin
-            act_msg = act i
-            @logger.info "#{log_message_prefix(position, i.uuid)} : #{act_msg}"
+            act_h = act i
+            act_log_entry = log_entry_core(position, i.uuid)
+            act_log_entry.merge!(act_h) if act_h.is_a?(Hash) && !act_h.empty?
+            @logger.info act_log_entry
           rescue => error
-            @logger.error "#{log_message_prefix(position, i.uuid)} : #{error}"
+            act_error_log_entry = log_entry_core(position, i.uuid)
+            act_error_log_entry.merge!({error: error})
+            @logger.error act_error_log_entry
           end
 
           position += 1
@@ -86,22 +90,26 @@ module ResearchMetadataBatch
 
         # handle error response
         if result.empty?
-          @logger.error "PURE_RECORD=#{position} : METADATA_EXTRACTION=No data"
+          @logger.error({pure_record: position, metadata_extraction: 'No data'})
           position += 1
         end
 
         sleep delay
       end
 
-      @logger.info "PURE_RECORDS_AVAILABLE=#{records_available}"
+      log_records_available records_available
 
     end
 
     private
 
-    # @return [String]
-    def log_message_prefix(pure_record, pure_uuid)
-      "PURE_RECORD=#{pure_record} : PURE_UUID=#{pure_uuid}"
+    def log_records_available(count)
+      @logger.info({pure_records_available: count})
+    end
+
+    # @return [Hash]
+    def log_entry_core(pure_record, pure_uuid)
+      {pure_record: pure_record, pure_uuid: pure_uuid}
     end
 
     def resource_count(params)

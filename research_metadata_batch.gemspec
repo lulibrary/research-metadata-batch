@@ -15,6 +15,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
   spec.required_ruby_version = '~> 2.1'
   spec.add_dependency 'puree', '~> 2.3'
+  spec.add_dependency 'ougai', '~> 1.7'
   spec.metadata = {
     "source_code_uri" => "https://github.com/lulibrary/research_metadata_batch"
   }
