@@ -9,12 +9,12 @@ module ResearchMetadataBatch
     end
 
     # Anything to be done at the start of a batch run
-    # @return [String, nil] Optionally, return something to indicate what has been done.
+    # @return [Hash, nil] Optionally, return something to indicate what has been done.
     def preflight
     end
 
     # Do something with model metadata
-    # @return [String, nil] Optionally, return something transaction-specific, such as a code/ID from an external service.
+    # @return [Hash, nil] Optionally, return something transaction-specific, such as a code/ID from an external service.
     def act(model)
       puts model.inspect
     end

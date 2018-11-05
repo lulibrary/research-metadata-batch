@@ -35,26 +35,25 @@ pure_config = {
 ResearchMetadataBatch::Dataset.new(pure_config: pure_config).process
 ```
 
-## Example application
-This example uses Amazon Web Services.
+## Creating an application
+Either open up classes or create subclasses to implement application-specific behaviour.
+
+This example creates subclasses and uses Amazon Web Services.
 
 ### shared.rb
 Implement methods from {ResearchMetadataBatch::Shared}.
 ```ruby
-require 'aws-sdk-s3'
+# require aws sdk
 
 module App
   module Shared
     def init(aws_config:)
-      aws_credentials = Aws::Credentials.new aws_config[:access_key_id],
-                                             aws_config[:secret_access_key]
-      @s3_client = Aws::S3::Client.new region: aws_config[:region],
-                                       credentials: aws_credentials
-      @s3_bucket = aws_config[:s3_bucket]
+      # Do something with :aws_config
     end
   
     def act(model)
-      # Do something involving Amazon Web Services 
+      # Do something with Amazon Web Services
+      return {key1: 'some_value', key2: 'another_value', msg: 'what_happened'} 
     end
   end
 end
@@ -84,10 +83,7 @@ pure_config = {
 }
 
 aws_config = {
-  access_key_id: ENV['AWS_ACCESS_KEY_ID'],
-  secret_access_key: ENV['AWS_SECRET_ACCESS_KEY'],
-  region: ENV['AWS_REGION'],
-  s3_bucket: 'YOUR_S3_BUCKET'
+  # details
 }
 
 log_file = '/path/to/your/log/file'
