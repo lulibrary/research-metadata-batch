@@ -3,7 +3,7 @@ PATH
   specs:
     research_metadata_batch (0.4.0)
       ougai (~> 1.7)
-      puree (~> 2.3)
+      puree (~> 2.4)
 
 GEM
   remote: https://rubygems.org/
@@ -28,7 +28,7 @@ GEM
     ougai (1.7.0)
       oj (~> 3.4)
     public_suffix (3.0.3)
-    puree (2.4.0)
+    puree (2.5.0)
       http (~> 2.0)
       nokogiri (~> 1.6)
     unf (0.1.4)
